@@ -1,1 +1,26 @@
 <h1>Ingresar</h1>
+
+<form [formGroup]="loginForm">
+    <label for="e">Ingrese Correo:</label>
+    <input type="email" formControlName="email">
+    
+    @if (loginForm.controls.email.errors) {
+        <div>
+            @if (loginForm.controls.email.errors['required']) {
+                <small>El Correo es Obligatorio</small>
+            }
+            @if (loginForm.controls.email.errors['email']) {
+                <small>No es un Correo Valido</small>
+            }
+        </div>
+    }
+    <br>
+    <label for="pass">Ingrese Contraseña:</label>
+    <input type="password" formControlName="password">
+    <br>
+    <button type="button" [disabled]="!loginForm.valid" (click)="funLogin()">Ingresar</button>
+</form>
+<hr>
+{{ loginForm.value | json }}
+<hr>
+<h4>ES VALIDO?: {{ loginForm.valid }}</h4>
