@@ -4,17 +4,13 @@ import { inject, Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  
+export class UsersService {
   urlBase = "https://laravue2.blumbit.net/back/public/api"
 
   http = inject(HttpClient);
 
-  funConectarConBackendLogin(credenciales: any){
-    return this.http.post(`${this.urlBase}/v1/auth/login`, credenciales);
+  funListar(){
+    return this.http.get(`${this.urlBase}/usuario`);
   }
 
-  funGetPerfil(){
-    return this.http.get(`${this.urlBase}/user`);
-  }
 }
