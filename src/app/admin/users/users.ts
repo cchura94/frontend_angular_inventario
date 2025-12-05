@@ -18,7 +18,7 @@ export class Users {
   listar(){
     this.userService.funListar().subscribe(
       (res: any) => {
-        this.usuarios.set(res);
+        this.usuarios.set(res.data);
       }
     )
   }
