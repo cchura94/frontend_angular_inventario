@@ -1,5 +1,19 @@
 <h1>Gestión Usuarios</h1>
 
+<form [formGroup]="userForm">
+    <label for="">Ingrese Nombre</label>
+    <input type="text" formControlName="username">
+    <br>
+    <label for="">Ingrese Correo</label>
+    <input type="email" formControlName="email">
+    <br>
+    <label for="">Ingrese Contraseña</label>
+    <input type="password" formControlName="password">
+
+    <br>
+    <button (click)="guardarUser()">Registrar Usuario</button>
+</form>
+
 <table border="1">
     <thead>
         <tr>
@@ -15,7 +29,9 @@
                 <td>{{ $index + 1 }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
-                <td></td>
+                <td>
+                    <button (click)="funEditar(user)">Editar</button>
+                </td>
             </tr>
         }
     </tbody>

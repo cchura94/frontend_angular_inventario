@@ -2,6 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 
+export interface User {
+  username: string,
+  email: string,
+  password: string
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -13,6 +19,10 @@ export class UsersService {
 
   funListar(){
     return this.http.get(`${this.urlBase}/users`);
+  }
+
+  funGuardar(data: User){
+    return this.http.post(`${this.urlBase}/users`, data);
   }
 
 }
