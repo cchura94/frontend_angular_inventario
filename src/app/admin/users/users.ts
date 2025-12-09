@@ -11,6 +11,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 export class Users {
   userService = inject(UsersService);
   usuarios = signal<any>([]);
+  abrirModal = signal<boolean>(false);
+  user_id = signal<number>(-1)
 
   userForm = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -22,6 +24,13 @@ export class Users {
     this.listar()
   }
 
+  abrirModalDialog(){
+    this.abrirModal.set(true)
+  }
+  cerrarModalDialog(){
+    this.abrirModal.set(false)
+  }
+
   listar(){
     this.userService.funListar().subscribe(
       (res: any) => {
@@ -31,17 +40,36 @@ export class Users {
   }
 
   guardarUser(){
-    const userData= {email: this.userForm.value.email || '', password: this.userForm.value.password || '', username: this.userForm.value.username || ''}
-    this.userService.funGuardar(userData).subscribe(
-      (res) => {
-        this.listar()
-      }
-    )
+    console.log(this.userForm.value);
+
+    if(this.user_id() > -1){
+      // editar
+      const userData= {email: this.userForm.value.email || '', password: this.userForm.value.password || '', username: this.userForm.value.username || ''}
+      this.userService.funModificar(userData, this.user_id()).subscribe(
+        (res) => {
+          this.userForm.reset()
+          this.listar()
+        }
+      )
+    }else{
+      // guardar
+      const userData= {email: this.userForm.value.email || '', password: this.userForm.value.password || '', username: this.userForm.value.username || ''}
+      this.userService.funGuardar(userData).subscribe(
+        (res) => {
+          this.userForm.reset()
+          this.listar()
+        }
+      )
+    }
+
+    this.user_id.set(-1)
   }
 
   funEditar(userData: any){
-    const {id, ...rest} = userData;
+    this.abrirModalDialog()
+    const {id, isActive, roles, ...rest} = userData;
     this.userForm.setValue(rest);
+    this.user_id.set(id)
     // this.userForm.value.password;
     // this.userForm.value.username = userData.username
     // this.userForm.value.email = userData.email

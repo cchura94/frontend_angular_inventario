@@ -1,38 +1,59 @@
 <h1>Gestión Usuarios</h1>
 
-<form [formGroup]="userForm">
-    <label for="">Ingrese Nombre</label>
-    <input type="text" formControlName="username">
-    <br>
-    <label for="">Ingrese Correo</label>
-    <input type="email" formControlName="email">
-    <br>
-    <label for="">Ingrese Contraseña</label>
-    <input type="password" formControlName="password">
+@if (abrirModal()) {
+    <div class="fixed inset-0 bg-gray-0 bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-blue-200 rounded-lg shadow-xl w-full max-w-md p-6">
+            <form [formGroup]="userForm" class="bg-white p-6 rounded-xl shadow-xl max-w-md space-y-4">
+                <div>
+                    <label for="">Ingrese Nombre</label>
+                    <input type="text" formControlName="username" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+            
+                <div>
+                    <label for="">Ingrese Correo</label>
+                    <input type="email" formControlName="email" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+            
+                <div>
+                    <label for="">Ingrese Contraseña</label>
+                    <input type="password" formControlName="password" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+             
+               
+            
+                <button (click)="guardarUser()" class="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 text-white">Registrar Usuario</button>
+            </form>
+        
+        </div>
+        <button (click)="cerrarModalDialog()" class="absolute top-2 right-2 text-gray-600 hover:text-gray-800">X</button>
+    </div>
 
-    <br>
-    <button (click)="guardarUser()">Registrar Usuario</button>
-</form>
+}
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>NOMBRE</th>
-            <th>CORREO</th>
-            <th>ACCION</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (user of usuarios(); track $index) {
+
+<button (click)="abrirModalDialog()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md">Nuevo Usuario</button>
+<div class="mt-8 overflow-x-auto">
+    <table class="min-w-full border border-gray-300 rounded-lg overflow-hidden">
+        <thead class="bg-gray-100">
             <tr>
-                <td>{{ $index + 1 }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.email }}</td>
-                <td>
-                    <button (click)="funEditar(user)">Editar</button>
-                </td>
+                <th class="px-4 py-2 border">ID</th>
+                <th class="px-4 py-2 border">NOMBRE</th>
+                <th class="px-4 py-2 border">CORREO</th>
+                <th class="px-4 py-2 border">ACCION</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @for (user of usuarios(); track $index) {
+                <tr>
+                    <td class="px-4 py-2 border">{{ $index + 1 }}</td>
+                    <td class="px-4 py-2 border">{{ user.username }}</td>
+                    <td class="px-4 py-2 border">{{ user.email }}</td>
+                    <td class="px-4 py-2 border">
+                        <button (click)="funEditar(user)" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">Editar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

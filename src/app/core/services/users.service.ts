@@ -25,4 +25,8 @@ export class UsersService {
     return this.http.post(`${this.urlBase}/users`, data);
   }
 
+  funModificar(data: User, id: number){
+    return this.http.patch(`${this.urlBase}/users/:id`, data);
+  }
+
 }
