@@ -1,25 +1,46 @@
-<h1>Ingresar</h1>
+<!--Hero-->
+<div class="pt-24">
+    <div class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
+        <!--Left Col-->
+        <div class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left mt-32">
 
-<form [formGroup]="loginForm">
-    <label for="e">Ingrese Correo:</label>
-    <input type="email" formControlName="email">
-    
-    @if (loginForm.controls.email.errors) {
-        <div>
-            @if (loginForm.controls.email.errors['required']) {
-                <small>El Correo es Obligatorio</small>
-            }
-            @if (loginForm.controls.email.errors['email']) {
-                <small>No es un Correo Valido</small>
-            }
+            <div class="relative -mt-12 lg:-mt-24">
+                <form [formGroup]="loginForm" class="max-w-sm mx-auto bg-white shadow-md rounded-lg p-6 space-y-4">
+                    <div class="flex flex-col space-y-1">
+                        <label for="e" class="text-gray-700 font-medium">Ingrese Correo:</label>
+                        <input type="email" formControlName="email" class="border border-gray-300 px-3 py-2 text-black">
+
+                    </div>
+
+                    @if (loginForm.controls.email.errors) {
+                    <div>
+                        @if (loginForm.controls.email.errors['required']) {
+                        <small>El Correo es Obligatorio</small>
+                        }
+                        @if (loginForm.controls.email.errors['email']) {
+                        <small>No es un Correo Valido</small>
+                        }
+                    </div>
+                    }
+                    <div class="flex flex-col space-y-1">
+
+                        <label for="pass" class="text-gray-700 font-medium">Ingrese Contraseña:</label>
+                        <input type="password" formControlName="password" class="border border-gray-300 px-3 py-2 text-black">
+                    </div>
+
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold" type="button" [disabled]="!loginForm.valid" (click)="funLogin()">Ingresar</button>
+                </form>
+            </div>
+
         </div>
-    }
-    <br>
-    <label for="pass">Ingrese Contraseña:</label>
-    <input type="password" formControlName="password">
-    <br>
-    <button type="button" [disabled]="!loginForm.valid" (click)="funLogin()">Ingresar</button>
-</form>
+       
+    </div>
+</div>
+
+
+
+
+
 <hr>
 {{ loginForm.value | json }}
 <hr>

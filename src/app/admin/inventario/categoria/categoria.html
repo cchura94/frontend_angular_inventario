@@ -1,0 +1,23 @@
+<h1>Prueba</h1>
+{{ categorias() }}
+<table>
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>NOMBRE</td>
+            <td>DETALLE</td>
+            <td>ACCION</td>
+        </tr>
+    </thead>
+    <tbody>
+        @for (cate of categorias(); track $index) {
+            <tr>
+                <td>{{cate.id}}</td>
+                <td>{{ cate.nombre }}</td>
+                <td>{{ cate.detalle }}</td>
+                <td></td>
+            </tr>
+
+        }
+    </tbody>
+</table>
