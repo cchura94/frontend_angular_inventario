@@ -7,6 +7,7 @@ import { Users } from './admin/users/users';
 import { authGuardGuard } from './core/guards/auth-guard-guard';
 import { WebLayout } from './layout/web-layout/web-layout';
 import { CategoriaComponent } from './admin/inventario/categoria/categoria';
+import { AppLayout } from './layout/component/app.layout';
 
 export const routes: Routes = [
     {
@@ -19,9 +20,15 @@ export const routes: Routes = [
             { path: 'auth', loadChildren: () => import('./auth/auth-module').then(m => m.AuthModule) },
         ]
     },
-    { path: 'admin/perfil', component: Profile, canActivate: [authGuardGuard] },
-    { path: 'admin/users', component: Users, canActivate: [authGuardGuard] },
-    { path: 'admin/categoria', component: CategoriaComponent, canActivate: [authGuardGuard] }
+    {
+        path: '',
+        component: AppLayout,
+        children: [
+            { path: 'admin/perfil', component: Profile, canActivate: [authGuardGuard] },
+            { path: 'admin/users', component: Users, canActivate: [authGuardGuard] },
+            { path: 'admin/categoria', component: CategoriaComponent, canActivate: [authGuardGuard] }
+        ]
+    }
 
 
 ];

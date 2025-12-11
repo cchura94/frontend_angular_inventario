@@ -1,5 +1,22 @@
-<h1>Prueba</h1>
-{{ categorias() }}
+<div class="card">
+    <p-button (click)="showDialog()" label="Editar" />
+    <p-dialog header="Editar" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+        <span class="p-text-secondary block mb-8">Actualiza su información.</span>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="username" class="font-semibold w-24">Nombre</label>
+            <input pInputText id="username" class="flex-auto" autocomplete="off" />
+        </div>
+        <div class="flex items-center gap-4 mb-8">
+            <label for="email" class="font-semibold w-24">Email</label>
+            <input pInputText id="email" class="flex-auto" autocomplete="off" />
+        </div>
+        <div class="flex justify-end gap-2">
+            <p-button label="Cancelar" severity="secondary" (click)="visible.set(false)" />
+            <p-button label="Guardar" (click)="visible.set(false)" />
+        </div>
+    </p-dialog>
+</div>
+
 <table>
     <thead>
         <tr>
