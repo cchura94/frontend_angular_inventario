@@ -8,6 +8,7 @@ import { authGuardGuard } from './core/guards/auth-guard-guard';
 import { WebLayout } from './layout/web-layout/web-layout';
 import { CategoriaComponent } from './admin/inventario/categoria/categoria';
 import { AppLayout } from './layout/component/app.layout';
+import { ProductoComponent } from './admin/inventario/producto.component/producto.component';
 
 export const routes: Routes = [
     {
@@ -21,12 +22,17 @@ export const routes: Routes = [
         ]
     },
     {
-        path: '',
+        path: 'admin',
         component: AppLayout,
         children: [
-            { path: 'admin/perfil', component: Profile, canActivate: [authGuardGuard] },
-            { path: 'admin/users', component: Users, canActivate: [authGuardGuard] },
-            { path: 'admin/categoria', component: CategoriaComponent, canActivate: [authGuardGuard] }
+            { path: 'perfil', component: Profile, canActivate: [authGuardGuard] },
+            { path: 'users', component: Users, canActivate: [authGuardGuard] },
+            { path: 'categoria', component: CategoriaComponent, canActivate: [authGuardGuard] },
+            {
+                path: 'producto',
+                component: ProductoComponent,
+                canActivate: [authGuardGuard]
+            }
         ]
     }
 

@@ -44,9 +44,9 @@ export class AppMenu {
                     },
                     
                     {
-                        label: 'Crud',
+                        label: 'Productos',
                         icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['/pages/crud']
+                        routerLink: ['/admin/producto']
                     },
                     {
                         label: 'Not Found',
