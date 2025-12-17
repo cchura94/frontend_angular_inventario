@@ -10,7 +10,7 @@
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="products()" [rows]="10" [columns]="cols" [paginator]="true"
+    <p-table #dt [value]="products()" [rows]="10" [lazy]="true" [totalRecords]="totalRecords()" [loading]="loading()" (onLazyLoad)="cargarDatos($event)" [columns]="cols" [paginator]="true"
         [tableStyle]="{ 'min-width': '10rem' }" [rowHover]="true" dataKey="id"
         currentPageReportTemplate="Mostrando {first} al {last} de {totalRecords} productos"
         [showCurrentPageReport]="true">
@@ -19,7 +19,7 @@
                 <h5 class="m-0">Gestión Productos</h5>
                 <p-iconfield>
                     <p-inputicon class="pi pi-search" />
-                    <input pInputText type="text" placeholder="Buscar..." />
+                    <input pInputText type="text" placeholder="Buscar..." [(ngModel)]="search" (change)="funGetProductos()" />
                 </p-iconfield>
             </div>
         </ng-template>
@@ -77,60 +77,57 @@
 
     <p-dialog [(visible)]="productDialog" [style]="{ width: '450px' }" header="Detalle de Producto" [modal]="true">
         <ng-template #content>
+            
             <div class="flex flex-col gap-6">
-                <img class="block m-auto pb-4" />
+            <!--<img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.image" class="block m-auto pb-4" *ngIf="product.image" /> -->
                 <div>
-                    <label for="name" class="block font-bold mb-3">Name</label>
-                    <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus fluid />
-                    <small class="text-red-500" *ngIf="submitted() && !product.name">Name is required.</small>
+                    <label for="name" class="block font-bold mb-3">Nombre</label>
+                    <input type="text" pInputText id="name" [(ngModel)]="product().nombre" required autofocus fluid />
+                    @if (submitted() && !product.name) {
+                        <small class="text-red-500">Nombre es Obligatorio.</small>
+                    }
                 </div>
                 <div>
-                    <label for="description" class="block font-bold mb-3">Description</label>
-                    <textarea id="description" pTextarea  required rows="3" cols="20" fluid></textarea>
+                    <label for="description" class="block font-bold mb-3">Descripción</label>
+                    <textarea id="description" pTextarea [(ngModel)]="product().descripcion" required rows="3" cols="20" fluid></textarea>
+                </div>
+    
+                <div>
+                    <label for="activo" class="block font-bold mb-3">Estado</label>
+                    <p-select [(ngModel)]="product().activo" inputId="activo" [options]="statuses" optionLabel="label" optionValue="value" placeholder="Selecciona estado" fluid />
                 </div>
 
                 <div>
-                    <label for="inventoryStatus" class="block font-bold mb-3">Inventory Status</label>
-                </div>
-
-                <div>
-                    <span class="block font-bold mb-4">Category</span>
+                    <span class="block font-bold mb-4">Categoria</span>
                     <div class="grid grid-cols-12 gap-4">
-                        <div class="flex items-center gap-2 col-span-6">
-                            <p-radiobutton id="category1" name="category" value="Accessories" />
-                            <label for="category1">Accessories</label>
-                        </div>
-                        <div class="flex items-center gap-2 col-span-6">
-                            <p-radiobutton id="category2" name="category" value="Clothing" />
-                            <label for="category2">Clothing</label>
-                        </div>
-                        <div class="flex items-center gap-2 col-span-6">
-                            <p-radiobutton id="category3" name="category" value="Electronics" />
-                            <label for="category3">Electronics</label>
-                        </div>
-                        <div class="flex items-center gap-2 col-span-6">
-                            <p-radiobutton id="category4" name="category" value="Fitness" />
-                            <label for="category4">Fitness</label>
-                        </div>
+                        @for (cate of categorias(); track $index) {
+                            <div class="flex items-center gap-2 col-span-6">
+                                <p-radiobutton [id]="`category${cate.id}`" name="categoria" [value]="cate.id" [(ngModel)]="product().categoria" />
+                                <label [for]="`category${cate.id}`">{{ cate.nombre }}</label>
+                            </div>
+                        }
+                       
                     </div>
                 </div>
-
+   
                 <div class="grid grid-cols-12 gap-4">
                     <div class="col-span-6">
-                        <label for="price" class="block font-bold mb-3">Price</label>
-                        <p-inputnumber id="price" mode="currency" currency="USD" locale="en-US" fluid />
+                        <label for="price" class="block font-bold mb-3">Precio</label>
+                        <p-inputnumber id="price" [(ngModel)]="product().precio_venta_actual" mode="currency" currency="USD" locale="en-US" fluid />
                     </div>
                     <div class="col-span-6">
-                        <label for="quantity" class="block font-bold mb-3">Quantity</label>
-                        <p-inputnumber id="quantity" fluid />
+                        <label for="quantity" class="block font-bold mb-3">Marca</label>
+                        <input type="text" pInputText id="marca" [(ngModel)]="product().marca" required autofocus fluid />
+
+                    <!--<p-inputnumber id="quantity" [(ngModel)]="product.quantity" fluid />-->
                     </div>
                 </div>
             </div>
         </ng-template>
-
+    
         <ng-template #footer>
-            <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
-            <p-button label="Save" icon="pi pi-check" (click)="saveProduct()" />
+            <p-button label="Cancelar" icon="pi pi-times" text (click)="hideDialog()" />
+            <p-button label="Guardar" icon="pi pi-check" (click)="saveProduct()" />
         </ng-template>
     </p-dialog>
 

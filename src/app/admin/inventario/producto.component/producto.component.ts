@@ -17,6 +17,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ProductoService } from '../../../core/services/producto.service';
+import { Categoria } from '../../../core/services/categoria';
 
 interface Column {
   field: string;
@@ -34,11 +35,11 @@ interface ExportColumn {
   imports: [
     TableModule,
     Dialog,
-    Ripple,
+    // Ripple,
     SelectModule,
     ToastModule,
     ToolbarModule,
-    ConfirmDialog,
+    // ConfirmDialog,
     InputTextModule,
     TextareaModule,
     CommonModule,
@@ -48,7 +49,7 @@ interface ExportColumn {
     IconFieldModule,
     InputIconModule,
     ButtonModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './producto.component.html',
   styleUrl: './producto.component.scss',
@@ -59,40 +60,61 @@ export class ProductoComponent {
   products = signal([]);
   product = signal<any>({});
   cols!: Column[];
-  submitted= signal<boolean>(false);
+  submitted = signal<boolean>(false);
   productDialog = signal<boolean>(false);
+  totalRecords = signal(0);
   @ViewChild('dt') dt!: Table;
+  categorias = signal<{id?:number, nombre: string}[]>([]);
 
   productoService = inject(ProductoService);
+  categoriaService = inject(Categoria);
+  statuses: any[] = [
+    { label: 'ACTIVO', value: true },
+    { label: 'INACTIVO', value: false }
+  ];
+  
+  loading = signal(false)
+  search = signal("");
 
   constructor(
     // private messageService: MessageService,
     // private confirmationService: ConfirmationService,
     private cd: ChangeDetectorRef
   ) {
-
     this.funGetProductos();
+    this.GetCategorias();
   }
 
-  funGetProductos(){
-    this.productoService.funListar().subscribe(
+  funGetProductos(page: number = 1, limit: number = 5) {
+    this.loading.set(true)
+
+    this.productoService.funListar(page, limit).subscribe((res: any) => {
+      console.log(res);
+      this.products.set(res.data);
+      this.totalRecords.set(res.total);
+
+      this.loading.set(false)
+    });
+  }
+
+  GetCategorias(){
+    this.categoriaService.listarCategorias().subscribe(
       (res: any) => {
-        console.log(res)
-        this.products.set(res.data)
+        this.categorias.set(res);
       }
     )
   }
 
   hideDialog() {
-      this.productDialog.set(false);
-      this.submitted.set(false);
+    this.productDialog.set(false);
+    this.submitted.set(false);
   }
 
   openNew() {
     this.product.set({});
     this.submitted.set(false);
     this.productDialog.set(true);
-}
+  }
 
   exportCSV(event: any) {
     // this.dt.exportCSV();
@@ -103,6 +125,11 @@ export class ProductoComponent {
     this.productDialog.set(true);
   }
 
+  cargarDatos(event: any){
+    let page = event.first / event.rows + 1;
+
+    this.funGetProductos(page, event.rows);
+  }
   deleteProduct(product: any) {
     /*
     this.confirmationService.confirm({
@@ -136,18 +163,32 @@ export class ProductoComponent {
 
   saveProduct() {
     this.submitted.set(true);
+    
+    const now = new Date();
 
-    if (this.product.name?.trim()) {
-        if (this.product().id) {
-            
-        } else {
-           
-        }
+const day = String(now.getDate()).padStart(2, '0');
+const month = String(now.getMonth() + 1).padStart(2, '0'); // meses empiezan en 0
+const year = String(now.getFullYear()).slice(-2);
 
-        this.products.set([...this.products()]);
-        this.productDialog.set(false);
-        this.product.set({});
+const formattedDate = `${day}-${month}-${year}`;
+
+    const {precio_venta_actual, ...rest} = this.product();
+    this.product.set({fecha_registro: formattedDate+"", precio_venta_actual: this.product().precio_venta_actual +"",...rest})
+    console.log(this.product());
+
+    if (this.product().nombre?.trim()) {
+      if (this.product().id) {
+      } else {
+        this.productoService.funGuardar(this.product()).subscribe(
+          (res: any) => {
+            this.funGetProductos();
+          }
+        )
+      }
+
+      this.products.set([...this.products()]);
+      this.productDialog.set(false);
+      this.product.set({});
     }
-}
-
+  }
 }
