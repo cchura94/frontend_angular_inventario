@@ -88,7 +88,7 @@ export class ProductoComponent {
   funGetProductos(page: number = 1, limit: number = 5) {
     this.loading.set(true)
 
-    this.productoService.funListar(page, limit).subscribe((res: any) => {
+    this.productoService.funListar(page, limit, this.search()).subscribe((res: any) => {
       console.log(res);
       this.products.set(res.data);
       this.totalRecords.set(res.total);

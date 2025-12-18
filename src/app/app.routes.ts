@@ -9,6 +9,8 @@ import { WebLayout } from './layout/web-layout/web-layout';
 import { CategoriaComponent } from './admin/inventario/categoria/categoria';
 import { AppLayout } from './layout/component/app.layout';
 import { ProductoComponent } from './admin/inventario/producto.component/producto.component';
+import { SucursalComponent } from './admin/inventario/sucursal.component/sucursal.component';
+import { AlmacenComponent } from './admin/inventario/almacen.component/almacen.component';
 
 export const routes: Routes = [
     {
@@ -31,6 +33,16 @@ export const routes: Routes = [
             {
                 path: 'producto',
                 component: ProductoComponent,
+                canActivate: [authGuardGuard]
+            },
+            {
+                path: 'sucursal',
+                component: SucursalComponent,
+                canActivate: [authGuardGuard]
+            },
+            {
+                path: 'almacen',
+                component: AlmacenComponent,
                 canActivate: [authGuardGuard]
             }
         ]

@@ -19,6 +19,7 @@
                 <h5 class="m-0">Gestión Productos</h5>
                 <p-iconfield>
                     <p-inputicon class="pi pi-search" />
+                    {{search()}}
                     <input pInputText type="text" placeholder="Buscar..." [(ngModel)]="search" (change)="funGetProductos()" />
                 </p-iconfield>
             </div>

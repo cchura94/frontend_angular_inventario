@@ -49,15 +49,34 @@ export class AppMenu {
                         routerLink: ['/admin/producto']
                     },
                     {
-                        label: 'Not Found',
-                        icon: 'pi pi-fw pi-exclamation-circle',
-                        routerLink: ['/pages/notfound']
+                        label: 'Sucursales',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/admin/sucursal']
                     },
                     {
-                        label: 'Empty',
-                        icon: 'pi pi-fw pi-circle-off',
-                        routerLink: ['/pages/empty']
-                    }
+                        label: 'Almacen',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/admin/almacen']
+                    },
+                ]
+            },
+            {
+                label: 'Compras y Ventas',
+                icon: 'pi pi-fw pi-briefcase',
+                routerLink: ['/admin'],
+                items: [
+                    {
+                        label: 'Compra',
+                        icon: 'pi pi-fw pi-globe',
+                        routerLink: ['/admin/categoria']
+                    },
+                    
+                    {
+                        label: 'Venta',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/admin/producto']
+                    },
+                   
                 ]
             }
         ];
