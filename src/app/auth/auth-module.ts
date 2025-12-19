@@ -5,6 +5,10 @@ import { AuthRoutingModule } from './auth-routing-module';
 import { Login } from './login/login';
 import { Register } from './register/register';
 import { ReactiveFormsModule } from '@angular/forms';
+import { PasswordModule } from 'primeng/password';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 
 
 @NgModule({
@@ -15,7 +19,11 @@ import { ReactiveFormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     AuthRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PasswordModule,
+    CheckboxModule,
+    InputTextModule,
+    ButtonModule
   ]
 })
 export class AuthModule { }

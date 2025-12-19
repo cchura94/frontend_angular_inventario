@@ -10,8 +10,8 @@ export class AlmacenService {
   
   http = inject(HttpClient);
 
-  listar(){
-    return this.http.get(`${this.urlBase}/almacen`);
+  listar(sucursalId?: number){
+    return this.http.get(`${this.urlBase}/almacen?sucursalId=`+sucursalId);
   }
 
   guardar(datos: any){
