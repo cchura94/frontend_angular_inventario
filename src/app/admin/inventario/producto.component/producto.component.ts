@@ -18,6 +18,9 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ProductoService } from '../../../core/services/producto.service';
 import { Categoria } from '../../../core/services/categoria';
+import { ImageModule } from 'primeng/image';
+import { FileUploadModule } from 'primeng/fileupload';
+
 
 interface Column {
   field: string;
@@ -50,6 +53,8 @@ interface ExportColumn {
     InputIconModule,
     ButtonModule,
     FormsModule,
+    ImageModule,
+    FileUploadModule
   ],
   templateUrl: './producto.component.html',
   styleUrl: './producto.component.scss',
@@ -75,6 +80,7 @@ export class ProductoComponent {
   
   loading = signal(false)
   search = signal("");
+  modalImage = signal(false);
 
   constructor(
     // private messageService: MessageService,
@@ -190,5 +196,34 @@ const formattedDate = `${day}-${month}-${year}`;
       this.productDialog.set(false);
       this.product.set({});
     }
+  }
+
+  showDialogImagenProduct(producto: any){
+    this.modalImage.set(true)
+    this.product.set(producto);
+
+  }
+
+  hideDialogImagenProduct(){
+    this.modalImage.set(false)
+    this.product.set({});
+
+  }
+
+  funSubirImagen(event: any){
+    console.log(event.files[0]);
+    const imagen = event.files[0];
+
+    let formData = new FormData()
+    formData.append("imagen", imagen);
+
+    this.productoService.actualizarImagen(this.product().id, formData).subscribe(
+      (res: any) => {
+        this.hideDialogImagenProduct();
+        this.funGetProductos()
+      }
+    )
+
+
   }
 }

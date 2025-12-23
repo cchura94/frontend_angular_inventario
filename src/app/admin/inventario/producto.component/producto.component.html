@@ -61,12 +61,16 @@
                 <td style="min-width: 2rem">{{ product.id }}</td>
                 <td style="min-width: 8rem">{{ product.nombre }}</td>
                 <td>
-                    <!--<img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.name" style="width: 64px" class="rounded" /> -->
+                    @if (product.imagen) {
+                        <p-image [src]="'http://127.0.0.1:3000/' + product.imagen" alt="Image" width="60" [preview]="true" />
+                    }
                 </td>
                 <td>{{ product.precio_venta_actual | currency: 'USD' }}</td>
                 <td>{{ product.marca }}</td>
                 <td>{{ product.almacenes[0]?.cantidad_actual }}</td>
                 <td>
+                    <p-button icon="pi pi-image" class="mr-2" [rounded]="true"
+                        (click)="showDialogImagenProduct(product)" />
                     <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true"
                         (click)="editProduct(product)" />
                     <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
@@ -130,6 +134,16 @@
             <p-button label="Cancelar" icon="pi pi-times" text (click)="hideDialog()" />
             <p-button label="Guardar" icon="pi pi-check" (click)="saveProduct()" />
         </ng-template>
+    </p-dialog>
+
+    <p-dialog header="Edit Profile" [modal]="true" [(visible)]="modalImage" [style]="{ width: '25rem' }">
+        <span class="p-text-secondary block mb-8">Update your information.</span>
+        
+        <p-fileupload name="demo[]" (uploadHandler)="funSubirImagen($event)" [customUpload]="true" [multiple]="true" accept="image/*" maxFileSize="1000000" mode="advanced">
+            <ng-template #empty>
+                <div>Arrastrar y soltar para subit el archivo</div>
+            </ng-template>
+        </p-fileupload>
     </p-dialog>
 
 

@@ -29,4 +29,8 @@ export class ProductoService {
     return this.http.delete(`${this.urlBase}/producto/${id}`);
   }
 
+  actualizarImagen(id:number, formData: FormData){
+    return this.http.post(`${this.urlBase}/producto/${id}/actualizar-imagen`, formData);
+  }
+
 }

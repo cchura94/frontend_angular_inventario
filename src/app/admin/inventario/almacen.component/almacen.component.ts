@@ -36,7 +36,7 @@ export class AlmacenComponent {
   }
 
 
-  funAlmacenes(sucursalId:any=-1){
+  funAlmacenes(sucursalId:any=1){
     this.almacenService.listar(sucursalId).subscribe(
       (res) => {
         this.almacenes.set(res);

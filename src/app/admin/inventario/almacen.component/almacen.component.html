@@ -11,7 +11,8 @@
         <input pInputText id="descripcion" type="text" placeholder="Descripción" class="w-full md:w-120 mb-8" formControlName="descripcion" />
         
         <label for="sucursal" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Sucursal</label>
-        <input pInputNumber id="sucursal" type="number" placeholder="Sucursal" class="w-full md:w-120 mb-8" formControlName="sucursal" />
+        <p-select [options]="sucursales()" formControlName="sucursal" optionLabel="nombre" optionValue="id" placeholder="Seleccionar Sucursal" class="w-full md:w-56" />
+
         
         <p-button label="Guardar" styleClass="w-full"  [disabled]="!almacenForm.valid" (click)="funGuardar()"></p-button>
 
