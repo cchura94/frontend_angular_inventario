@@ -1,0 +1,132 @@
+<div class="bg-gray-100 min-h-screen p-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="bg-white rounded-lg shadow p-4">
+                <p-table #dt [value]="products()" [rows]="10" [lazy]="true" [totalRecords]="totalRecords()"
+                    [loading]="loading()" (onLazyLoad)="cargarDatos($event)" [columns]="cols" [paginator]="true"
+                    [tableStyle]="{ 'min-width': '10rem' }" [rowHover]="true" dataKey="id"
+                    currentPageReportTemplate="Mostrando {first} al {last} de {totalRecords} productos"
+                    [showCurrentPageReport]="true">
+                    <ng-template #caption>
+                        <div class="flex items-center justify-between">
+                            <h5 class="m-0">Gestión Productos</h5>
+                            <p-iconfield>
+                                <p-inputicon class="pi pi-search" />
+                                <input pInputText type="text" placeholder="Buscar..." [(ngModel)]="search"
+                                    (change)="funGetProductos()" />
+                            </p-iconfield>
+                        </div>
+                    </ng-template>
+                    <ng-template #header>
+                        <tr>
+                            <th style="min-width: 1rem">ID</th>
+                            <th pSortableColumn="nombre" style="min-width:4rem">
+                                <div class="flex items-center gap-2">
+                                    Nombre
+                                    <p-sortIcon field="nombre" />
+                                </div>
+                            </th>
+                            <th>Imagen</th>
+                            <th pSortableColumn="precio" style="min-width: 2rem">
+                                <div class="flex items-center gap-2">
+                                    Precio
+                                    <p-sortIcon field="precio" />
+                                </div>
+                            </th>
+                            <th pSortableColumn="category" style="min-width:2rem">
+                                <div class="flex items-center gap-2">
+                                    M
+                                    <p-sortIcon field="marca" />
+                                </div>
+                            </th>
+                            <th pSortableColumn="Stock" style="min-width:1rem">
+                                <div class="flex items-center gap-2">
+                                    Stock
+                                    <p-sortIcon field="stock" />
+                                </div>
+                            </th>
+
+                            <th style="min-width: 2rem"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template #body let-product>
+                        <tr>
+                            <td style="min-width: 2rem">{{ product.id }}</td>
+                            <td style="min-width: 4rem">{{ product.nombre }}</td>
+                            <td>
+                                @if (product.imagen) {
+                                <p-image [src]="'http://127.0.0.1:3000/' + product.imagen" alt="Image" width="30"
+                                    [preview]="true" />
+                                }
+                            </td>
+                            <td>{{ product.precio_venta_actual | currency: 'USD' }}</td>
+                            <td>{{ product.marca }}</td>
+                            <td>{{ product.almacenes[0]?.cantidad_actual }}</td>
+                            <td>
+
+                                <p-button icon="pi pi-plus" class="mr-2" [rounded]="true" [outlined]="false"
+                                    (click)="addCarrito(product)" />
+
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+
+            </div>
+
+            <div class="flex flex-col gap-6">
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h2 class="text-xl font-semibold mb-4">Carrito</h2>
+                    <p-table [value]="carrito()">
+                        <ng-template #header>
+                            <tr>
+                                <th>Producto</th>
+                                <th>C.</th>
+                                <th>Precio</th>
+                                <th>Acción</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template #body let-prod>
+                            <tr>
+                                <td>{{ prod.nombre }}</td>
+                                <td>{{ prod.cantidad }}</td>
+                                <td>{{ prod.precio }}</td>
+                                <td>
+                                    <p-button icon="pi pi-trash" class="mr-2" [rounded]="false" [outlined]="false"
+                                        (click)="quitarCarrito(prod.id_producto)" />
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h2 class="text-xl font-semibold mb-4">Cliente/Proveedor</h2>
+                    <p-button (click)="showDialogCliente()" label="Nuevo Proveedor" />
+                    <input pInputText type="text" placeholder="Buscar Proveedor..." [(ngModel)]="search"
+                                    (change)="funGetProductos()" />
+                    <p-dialog header="Proveedor" [modal]="true" [(visible)]="visibleCliente" [style]="{ width: '25rem' }">
+                        <span class="p-text-secondary block mb-8">Actualiza los Datos.</span>
+                        <div class="flex items-center gap-4 mb-4">
+                            <label for="username" class="font-semibold w-24">Username</label>
+                            <input pInputText id="username" class="flex-auto" autocomplete="off" />
+                        </div>
+                        <div class="flex items-center gap-4 mb-8">
+                            <label for="email" class="font-semibold w-24">Email</label>
+                            <input pInputText id="email" class="flex-auto" autocomplete="off" />
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <p-button label="Cancel" severity="secondary" (click)="visibleCliente.set(false)" />
+                            <p-button label="Save" (click)="visibleCliente.set(false)" />
+                        </div>
+                    </p-dialog>
+                </div>
+                <div class="bg-white rounded-lg shadow p-4">
+                    <h2 class="text-xl font-semibold mb-4">Pedido</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

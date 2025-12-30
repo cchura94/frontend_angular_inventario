@@ -68,13 +68,13 @@ export class AppMenu {
                     {
                         label: 'Compra',
                         icon: 'pi pi-fw pi-globe',
-                        routerLink: ['/admin/categoria']
+                        routerLink: ['/admin/nota/compra']
                     },
                     
                     {
                         label: 'Venta',
                         icon: 'pi pi-fw pi-pencil',
-                        routerLink: ['/admin/producto']
+                        routerLink: ['/admin/nota/venta']
                     },
                    
                 ]

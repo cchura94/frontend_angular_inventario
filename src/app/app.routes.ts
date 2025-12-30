@@ -11,6 +11,7 @@ import { AppLayout } from './layout/component/app.layout';
 import { ProductoComponent } from './admin/inventario/producto.component/producto.component';
 import { SucursalComponent } from './admin/inventario/sucursal.component/sucursal.component';
 import { AlmacenComponent } from './admin/inventario/almacen.component/almacen.component';
+import { CompraComponent } from './admin/notas/compra.component/compra.component';
 
 export const routes: Routes = [
     {
@@ -44,7 +45,15 @@ export const routes: Routes = [
                 path: 'almacen',
                 component: AlmacenComponent,
                 canActivate: [authGuardGuard]
+            },
+            
+            {
+                path: 'nota/compra',
+                component: CompraComponent,
+                canActivate: [authGuardGuard],
+                
             }
+        
         ]
     }
 
