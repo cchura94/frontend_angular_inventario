@@ -3,12 +3,16 @@ import { Table, TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ProductoService } from '../../../core/services/producto.service';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { InputText } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
+import { SelectModule } from 'primeng/select';
+import { AlmacenService } from '../../../core/services/almacen.service';
+import { SucursalService } from '../../../core/services/sucursal.service';
+import { ClienteProveedorService } from '../../../core/services/clienteproveedor.service';
 
 interface Column {
   field: string;
@@ -19,7 +23,7 @@ interface Column {
 
 @Component({
   selector: 'app-compra.component',
-  imports: [TableModule, IconFieldModule, InputIconModule, FormsModule, ImageModule, ButtonModule, CommonModule, InputText, DialogModule],
+  imports: [TableModule, IconFieldModule, InputIconModule, FormsModule, ReactiveFormsModule, ImageModule, ButtonModule, CommonModule, InputText, DialogModule, SelectModule],
   templateUrl: './compra.component.html',
   styleUrl: './compra.component.scss',
 })
@@ -33,9 +37,51 @@ export class CompraComponent {
   loading = signal(false);
   search = signal("");
   visibleCliente = signal(false);
+  sucursales = signal([]);
+  almacenes = signal<any>([])
+  selectedSucursal = signal(-1);
 
   productoService = inject(ProductoService);
+  almacenService = inject(AlmacenService);
+  sucursalService = inject(SucursalService);
+  clienteProveedorService = inject(ClienteProveedorService)
+  almacen = signal<any>({});
+  clienteProveedor = signal<any>({});
 
+  proveedorForm = new FormGroup({
+    tipo : new FormControl('proveedor'),
+    razon_social: new FormControl('',  [Validators.required]),
+    identificacion: new FormControl('',  [Validators.required]),
+    telefono: new FormControl('',  [Validators.required]),
+    direccion: new FormControl('',  [Validators.required]),
+    correo: new FormControl('',  [Validators.required]),
+    estado: new FormControl(true,  [Validators.required]),
+  });
+
+
+  constructor(){
+    this.funSelectedSucursal()
+    this.funGetSucursales();
+  }
+
+
+  funSelectedSucursal(){
+    this.almacen.set({});
+    this.funAlmacenes(this.selectedSucursal())
+  }
+
+  funGetSucursales(){
+    this.sucursalService.listar().subscribe(
+      (res: any) => {
+        this.sucursales.set(res);
+      }
+
+    )
+  }
+
+  seleccionarAlmacen(alm: any){
+    this.almacen.set(alm);
+  }
 
 
   cargarDatos(event: any){
@@ -56,8 +102,78 @@ export class CompraComponent {
     });
   }
 
+  funAlmacenes(sucursalId:any=1){
+    this.almacenService.listar(sucursalId).subscribe(
+      (res) => {
+        this.almacenes.set(res);
+      }
+    )
+  }
+
+  funGuardarProveedor(){
+    this.clienteProveedorService.guardar(this.proveedorForm.value).subscribe(
+      (res: any) => {
+        this.clienteProveedor.set(res);
+
+        this.proveedorForm.reset();
+        this.visibleCliente.set(false);
+      }
+    );
+
+  }
+
+  funRegCompraProductos(){
+    const datos = {
+      "fecha": "2025-11-30",
+      "tipo_nota": "compra",
+      "cliente_id": 1,
+      "user_id": "30f01a2a-52ff-49a0-938f-3a0a214095b5",
+      "impuestos": "0",
+      "descuento": "0",
+      "estado_nota": "NINUNO",
+      "observaciones": "NINGUNO",
+      "movimientos": [
+       {
+        "producto_id": 4,
+        "almacen_id": 1,
+        "cantidad": 8,
+        "tipo_movimiento": "ingreso",
+        "precio_unitario_compra": "220.00",
+        "precio_unitario_venta": "260.00",
+        "observaciones": "NINGUNO"
+       },
+       {
+        "producto_id": 5,
+        "almacen_id": 1,
+        "cantidad": 8,
+        "tipo_movimiento": "ingreso",
+        "precio_unitario_compra": "220.00",
+        "precio_unitario_venta": "260.00",
+        "observaciones": "NINGUNO"
+       }
+      ]
+    }
+  }
+
   addCarrito(prod: any){
-   this.carrito.set([...this.carrito(), { id_producto: prod.id ,nombre: prod.nombre, cantidad: 1, precio: prod.precio_venta_actual }]);
+    const carritoActual = this.carrito();
+
+    const index = carritoActual.findIndex(
+      (item: any) => item.id_producto === prod.id
+    );
+    
+    if(index !== -1){
+      // El producto ya existe : aumentar la cantidad
+      const carritoActualizado = carritoActual.map((item: any, i: number) => 
+        i === index ? {...item, cantidad: item.cantidad + 1}: item
+      );
+
+      this.carrito.set(carritoActualizado);
+    }else{
+      // El producto no existe : agregar nuevo
+      this.carrito.set([...this.carrito(), { id_producto: prod.id ,nombre: prod.nombre, cantidad: 1, precio: prod.precio_venta_actual }]);
+    }
+
   }
 
   quitarCarrito(prod:any){
