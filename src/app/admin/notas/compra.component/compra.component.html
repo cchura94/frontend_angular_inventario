@@ -20,7 +20,6 @@
                     </ng-template>
                     <ng-template #header>
                         <tr>
-                            <th style="min-width: 1rem">ID</th>
                             <th pSortableColumn="nombre" style="min-width:4rem">
                                 <div class="flex items-center gap-2">
                                     Nombre
@@ -52,8 +51,7 @@
                     </ng-template>
                     <ng-template #body let-product>
                         <tr>
-                            <td style="min-width: 2rem">{{ product.id }}</td>
-                            <td style="min-width: 4rem">{{ product.nombre }}</td>
+                            <td style="min-width: 2rem">{{ product.nombre }}</td>
                             <td>
                                 @if (product.imagen) {
                                 <p-image [src]="'http://127.0.0.1:3000/' + product.imagen" alt="Image" width="30"
@@ -62,7 +60,14 @@
                             </td>
                             <td>{{ product.precio_venta_actual | currency: 'USD' }}</td>
                             <td>{{ product.marca }}</td>
-                            <td>{{ product.almacenes[0]?.cantidad_actual }}</td>
+                            <td style="min-width: 2rem">
+                                @for(alm of product.almacenes; track $index){
+                                    <small>ALMACEN:{{ alm?.id }}</small>
+                                    <br>
+                                    <small>CANTIDAD:{{ alm?.cantidad_actual }}</small>
+                                    <hr>
+                                }
+                            </td>
                             <td>
 
                                 <p-button icon="pi pi-plus" class="mr-2" [rounded]="true" [outlined]="false"
@@ -90,7 +95,10 @@
                         <ng-template #body let-prod>
                             <tr>
                                 <td>{{ prod.nombre }}</td>
-                                <td>{{ prod.cantidad }}</td>
+                                <td>
+                                    <input type="text" [(ngModel)]="prod.cantidad">
+                                    
+                                </td>
                                 <td>{{ prod.precio }}</td>
                                 <td>
                                     <p-button icon="pi pi-trash" class="mr-2" [rounded]="false" [outlined]="false"

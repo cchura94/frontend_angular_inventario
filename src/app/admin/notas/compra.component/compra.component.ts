@@ -13,6 +13,7 @@ import { SelectModule } from 'primeng/select';
 import { AlmacenService } from '../../../core/services/almacen.service';
 import { SucursalService } from '../../../core/services/sucursal.service';
 import { ClienteProveedorService } from '../../../core/services/clienteproveedor.service';
+import { NotaService } from '../../../core/services/nota.service';
 
 interface Column {
   field: string;
@@ -45,6 +46,8 @@ export class CompraComponent {
   almacenService = inject(AlmacenService);
   sucursalService = inject(SucursalService);
   clienteProveedorService = inject(ClienteProveedorService)
+  notaService = inject(NotaService);
+
   almacen = signal<any>({});
   clienteProveedor = signal<any>({});
 
@@ -123,36 +126,60 @@ export class CompraComponent {
   }
 
   funRegCompraProductos(){
-    const datos = {
-      "fecha": "2025-11-30",
-      "tipo_nota": "compra",
-      "cliente_id": 1,
-      "user_id": "30f01a2a-52ff-49a0-938f-3a0a214095b5",
-      "impuestos": "0",
-      "descuento": "0",
-      "estado_nota": "NINUNO",
-      "observaciones": "NINGUNO",
-      "movimientos": [
-       {
-        "producto_id": 4,
-        "almacen_id": 1,
-        "cantidad": 8,
-        "tipo_movimiento": "ingreso",
-        "precio_unitario_compra": "220.00",
-        "precio_unitario_venta": "260.00",
-        "observaciones": "NINGUNO"
-       },
-       {
-        "producto_id": 5,
-        "almacen_id": 1,
-        "cantidad": 8,
-        "tipo_movimiento": "ingreso",
-        "precio_unitario_compra": "220.00",
-        "precio_unitario_venta": "260.00",
-        "observaciones": "NINGUNO"
-       }
-      ]
+    const hoy = new Date();
+
+    // capturar el user_id
+    const token = localStorage.getItem("access_token");
+    const base64url = token?.split('.')[1] || "";
+    const payload = JSON.parse(atob(base64url));
+    
+    const fecha_hora_actual = hoy.toLocaleString('sv-SE', {hour12: false})
+
+    if(this.clienteProveedor().id && payload && this.carrito().length > 0){
+      
+      const movimientos = [];
+      for (let i = 0; i < this.carrito().length; i++) {
+        const prod = this.carrito()[i];
+        movimientos.push({
+          "producto_id": prod.id_producto,
+          "almacen_id": this.almacen().id,
+          "cantidad": parseInt(prod.cantidad),
+          "tipo_movimiento": "ingreso",
+          "precio_unitario_compra": prod.precio,
+          "precio_unitario_venta": prod.precio,
+          "observaciones": "NINGUNO"
+         });
+      }
+  
+      const datos = {
+        "fecha": fecha_hora_actual,
+        "tipo_nota": "compra",
+        "cliente_id": this.clienteProveedor().id,
+        "user_id": payload.id,
+        "impuestos": "0",
+        "descuento": "0",
+        "estado_nota": "NINGUNO",
+        "observaciones": "NINGUNO",
+        "movimientos": movimientos
+      }
+
+      console.log(datos);
+
+      this.notaService.guardar(datos).subscribe(
+        (res: any) => {
+          this.carrito.set([]);
+          this.clienteProveedor.set({})
+          this.almacen.set({});
+
+          this.funGetProductos();
+        }
+      )
+
     }
+
+
+
+
   }
 
   addCarrito(prod: any){
