@@ -10,8 +10,8 @@ export class ClienteProveedorService {
   
   http = inject(HttpClient);
 
-  listar(){
-    return this.http.get(`${this.urlBase}/cliente-proveedor`);
+  listar(buscar?:string){
+    return this.http.get(`${this.urlBase}/cliente-proveedor?buscar=${buscar}`);
   }
 
   guardar(datos: any){

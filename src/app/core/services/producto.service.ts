@@ -9,8 +9,8 @@ export class ProductoService {
   urlBase = environment.servidor;
   http = inject(HttpClient);
   
-  funListar(page: number = 1, limit: number = 10, search: string = ''){
-    return this.http.get(`${this.urlBase}/producto?page=${page}&limit=${limit}&search=${search}&almacen=`);
+  funListar(page: number = 1, limit: number = 10, search: string = '', sortBy= 'id', almacen=0){
+    return this.http.get(`${this.urlBase}/producto?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}&almacen=${almacen}`);
   }
 
   funGuardar(datos: any){

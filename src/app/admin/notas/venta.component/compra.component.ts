@@ -99,7 +99,7 @@ export class CompraComponent {
     this.funGetProductos(page, event.rows);
   }
 
-  funGetProductos(page: number = 1, limit: number = 10) {
+  funGetProductos(page: number = 1, limit: number = 5) {
     this.loading.set(true)
 
     this.productoService.funListar(page, limit, this.search()).subscribe((res: any) => {
