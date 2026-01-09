@@ -17,6 +17,48 @@
                                     (change)="funGetProductos()" />
                             </p-iconfield>
                         </div>
+                        <div class="bg-white rounded-lg shadow">        
+                            <div class="">
+                                Sucursal: 
+                                <p-select [options]="sucursales()" [(ngModel)]="selectedSucursal" optionLabel="nombre" optionValue="id" placeholder="Seleccionar Sucursal" class="w-full md:w-56" (onChange)="funSelectedSucursal()" />
+                            </div>
+                        
+                            @if(!almacen().id){
+                                <p-table [value]="almacenes()">
+                                    <ng-template #header>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>NOMBRE</th>
+                                            <th>Codigo</th>
+                                            <th>Sucursal</th>
+                                            <th>ACCION</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template #body let-alm>
+                                        <tr>
+                                            <td>{{ alm.id }}</td>
+                                            <td>{{ alm.nombre }}</td>
+                                            <td>{{ alm.codigo }}</td>
+                                            <td>
+                                                {{ alm.sucursal.nombre }}
+                                                <small>{{alm.sucursal.direccion}}</small>
+                                            </td>
+                                            <td>
+                                                <p-button icon="pi pi-plus" class="mr-2" [rounded]="false" [outlined]="false"
+                                                    (click)="seleccionarAlmacen(alm)" />
+                                            </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            }
+                            @if(almacen()){
+        
+                                <h6>ALMACEN: {{almacen().nombre}}</h6>
+                                <h6>CODIGO: {{almacen().codigo}}</h6>
+                            }
+                            
+                                
+                        </div>
                     </ng-template>
                     <ng-template #header>
                         <tr>
@@ -62,9 +104,12 @@
                             <td>{{ product.marca }}</td>
                             <td style="min-width: 2rem">
                                 @for(alm of product.almacenes; track $index){
-                                    <small>ALMACEN:{{ alm?.id }}</small>
+                                    <small><a [href]="alm?.almacen?.id">{{ alm?.almacen?.nombre }}</a></small>
                                     <br>
-                                    <small>CANTIDAD:{{ alm?.cantidad_actual }}</small>
+                                    <small [ngClass]="{
+                                        'text-red-600 font-bold': alm?.cantidad_actual<3,
+                                        'text-green-600': alm?.cantidad_actual >= 3
+                                    }">CANT: <strong>{{ alm?.cantidad_actual }}</strong></small>
                                     <hr>
                                 }
                             </td>
@@ -108,54 +153,12 @@
                         </ng-template>
                     </p-table>
                 </div>
-                <div class="bg-white rounded-lg shadow p-2">
-                    <h2 class="text-xl font-semibold">Sucursal/Almacen</h2>
-
-                    <div class="card flex justify-center">
-                        <p-select [options]="sucursales()" [(ngModel)]="selectedSucursal" optionLabel="nombre" optionValue="id" placeholder="Seleccionar Sucursal" class="w-full md:w-56" (onChange)="funSelectedSucursal()" />
-                    </div>
                 
-                    @if(!almacen().id){
-                        <p-table [value]="almacenes()">
-                            <ng-template #header>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>NOMBRE</th>
-                                    <th>Codigo</th>
-                                    <th>Sucursal</th>
-                                    <th>ACCION</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template #body let-alm>
-                                <tr>
-                                    <td>{{ alm.id }}</td>
-                                    <td>{{ alm.nombre }}</td>
-                                    <td>{{ alm.codigo }}</td>
-                                    <td>
-                                        {{ alm.sucursal.nombre }}
-                                        <small>{{alm.sucursal.direccion}}</small>
-                                    </td>
-                                    <td>
-                                        <p-button icon="pi pi-plus" class="mr-2" [rounded]="false" [outlined]="false"
-                                            (click)="seleccionarAlmacen(alm)" />
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    }
-                    @if(almacen()){
-
-                        <h6>ALMACEN: {{almacen().nombre}}</h6>
-                        <h6>CODIGO: {{almacen().codigo}}</h6>
-                    }
-                    
-                        
-                </div>
                 <div class="bg-white rounded-lg shadow p-4">
-                    <h2 class="text-xl font-semibold mb-4">Cliente/Proveedor</h2>
-                    <p-button (click)="showDialogCliente()" label="Nuevo Proveedor" />
+                    <h2 class="text-xl font-semibold mb-4">Cliente</h2>
+                    <p-button (click)="showDialogCliente()" label="Nuevo Cliente" />
                     
-                    <input pInputText type="text" placeholder="Buscar Proveedor..." [(ngModel)]="buscar_cliente"
+                    <input pInputText type="text" placeholder="Buscar Cliente..." [(ngModel)]="buscar_cliente"
                                     (change)="funGetCLienteProveedor()" />
 
                                     
@@ -194,8 +197,8 @@
                                     }
 
                     
-                    <p-dialog header="Proveedor" [modal]="true" [(visible)]="visibleCliente" [style]="{ width: '25rem' }" [formGroup]="proveedorForm">
-                        <span class="p-text-secondary block mb-8">Datos Proveedor.</span>
+                    <p-dialog header="Cliente" [modal]="true" [(visible)]="visibleCliente" [style]="{ width: '25rem' }" [formGroup]="proveedorForm">
+                        <span class="p-text-secondary block mb-8">Datos Cliente.</span>
 
                         <div class="flex items-center gap-4 mb-4">
                             <label for="rs" class="font-semibold w-24">Razon Social</label>
@@ -225,8 +228,8 @@
                     </p-dialog>
                 </div>
                 <div class="bg-white rounded-lg shadow p-4">
-                    <h2 class="text-xl font-semibold mb-4">Registro Compra</h2>
-                    <p-button (click)="funRegCompraProductos()" label="Registrar Compra de Productos" />
+                    <h2 class="text-xl font-semibold mb-4">Registro Venta</h2>
+                    <p-button (click)="funRegCompraProductos()" label="Registrar Venta de Productos" />
 
                 </div>
             </div>

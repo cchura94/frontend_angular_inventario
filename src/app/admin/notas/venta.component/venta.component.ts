@@ -23,12 +23,12 @@ interface Column {
 
 
 @Component({
-  selector: 'app-compra.component',
+  selector: 'app-venta.component',
   imports: [TableModule, IconFieldModule, InputIconModule, FormsModule, ReactiveFormsModule, ImageModule, ButtonModule, CommonModule, InputText, DialogModule, SelectModule],
-  templateUrl: './compra.component.html',
-  styleUrl: './compra.component.scss',
+  templateUrl: './venta.component.html',
+  styleUrl: './venta.component.scss',
 })
-export class CompraComponent {
+export class VentaComponent {
 
   carrito = signal<any>([]);
   products = signal([]);
@@ -54,7 +54,7 @@ export class CompraComponent {
   clienteProveedor = signal<any>({});
 
   proveedorForm = new FormGroup({
-    tipo : new FormControl('proveedor'),
+    tipo : new FormControl('cliente'),
     razon_social: new FormControl('',  [Validators.required]),
     identificacion: new FormControl('',  [Validators.required]),
     telefono: new FormControl('',  [Validators.required]),
@@ -86,6 +86,7 @@ export class CompraComponent {
 
   seleccionarAlmacen(alm: any){
     this.almacen.set(alm);
+    this.funGetProductos()
   }
 
   seleccionarClienteProveedor(clie: any){
@@ -99,10 +100,10 @@ export class CompraComponent {
     this.funGetProductos(page, event.rows);
   }
 
-  funGetProductos(page: number = 1, limit: number = 5) {
+  funGetProductos(page: number = 1, limit: number = 10) {
     this.loading.set(true)
 
-    this.productoService.funListar(page, limit, this.search()).subscribe((res: any) => {
+    this.productoService.funListar(page, limit, this.search(), 'id', this.almacen().id).subscribe((res: any) => {
       console.log(res);
       this.products.set(res.data);
       this.totalRecords.set(res.total);
@@ -159,7 +160,7 @@ export class CompraComponent {
           "producto_id": prod.id_producto,
           "almacen_id": this.almacen().id,
           "cantidad": parseInt(prod.cantidad),
-          "tipo_movimiento": "ingreso",
+          "tipo_movimiento": "salida",
           "precio_unitario_compra": prod.precio,
           "precio_unitario_venta": prod.precio,
           "observaciones": "NINGUNO"
@@ -168,7 +169,7 @@ export class CompraComponent {
   
       const datos = {
         "fecha": fecha_hora_actual,
-        "tipo_nota": "compra",
+        "tipo_nota": "venta",
         "cliente_id": this.clienteProveedor().id,
         "user_id": payload.id,
         "impuestos": "0",
@@ -187,6 +188,10 @@ export class CompraComponent {
           this.almacen.set({});
 
           this.funGetProductos();
+        },
+        (error:any) => {
+          console.log(error?.error?.message);
+          alert(error?.error?.message);
         }
       )
 
