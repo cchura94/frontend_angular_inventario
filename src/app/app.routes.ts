@@ -13,6 +13,7 @@ import { SucursalComponent } from './admin/inventario/sucursal.component/sucursa
 import { AlmacenComponent } from './admin/inventario/almacen.component/almacen.component';
 import { CompraComponent } from './admin/notas/compra.component/compra.component';
 import { VentaComponent } from './admin/notas/venta.component/venta.component';
+import { ReporteCompraVentaComponent } from './admin/notas/reporte-compra-venta-component/reporte-compra-venta-component';
 
 export const routes: Routes = [
     {
@@ -58,6 +59,13 @@ export const routes: Routes = [
             {
                 path: 'nota/venta',
                 component: VentaComponent,
+                canActivate: [authGuardGuard],
+                
+            },
+            
+            {
+                path: 'nota/reportes',
+                component: ReporteCompraVentaComponent,
                 canActivate: [authGuardGuard],
                 
             }

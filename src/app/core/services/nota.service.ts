@@ -10,8 +10,8 @@ export class NotaService {
   
   http = inject(HttpClient);
 
-  listar(){
-    return this.http.get(`${this.urlBase}/nota`);
+  listar(page: number = 1, limit: number = 10, selectedTipo: string=''){
+    return this.http.get(`${this.urlBase}/nota?page=${page}&limit=${limit}&tipo_nota=${selectedTipo}`);
   }
 
   guardar(datos: any){

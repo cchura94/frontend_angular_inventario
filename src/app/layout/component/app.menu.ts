@@ -76,6 +76,11 @@ export class AppMenu {
                         icon: 'pi pi-fw pi-pencil',
                         routerLink: ['/admin/nota/venta']
                     },
+                    {
+                        label: 'Reporte Compra/Venta',
+                        icon: 'pi pi-fw pi-pencil',
+                        routerLink: ['/admin/nota/reportes']
+                    },
                    
                 ]
             }
